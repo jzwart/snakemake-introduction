@@ -1,7 +1,6 @@
 rule all:
     input:
-        "2_process/out/doy_120020150.csv",
-        "2_process/out/doy_107072210.csv"
+        "3_plot/out/doy_plot.png"
 
 """
 Download from ScienceBase
@@ -54,4 +53,24 @@ rule calc_doy_means:
         out_file = "2_process/out/doy_{lake_id}.csv"
     script:
         "2_process/calc_doy_means.py"
+
+rule combine_site_files:
+    input:
+        "2_process/out/doy_120020150.csv",
+        "2_process/out/doy_107072210.csv",
+	"2_process/out/doy_86444267.csv"
+    output:
+        out_file = "2_process/out/combined_doy.csv"
+    script:
+        "2_process/combine_site_files.py"
+
+rule plot_doy_mean:
+    params: 
+    	depths = [0, 1, 2, 3, 5, 10]
+    input:
+    	in_file = "2_process/out/combined_doy.csv"
+    output:
+    	out_file = "3_plot/out/doy_plot.png" 
+    script: 
+    	"3_plot/plot_doy_mean.py" 
 
